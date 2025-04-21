@@ -10,6 +10,15 @@ from src.db.models.mock_data import MockDbData
 
 @DBManager.with_session
 async def get_all_mock_data(session: AsyncSession) -> list[MockModelWithDate] | None:
+    """
+    Получить все mock-данные из базы данных.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+
+    Returns:
+        list[MockModelWithDate] | None: Список моделей mock-данных с датой, либо None, если данных нет.
+    """
     res = await session.execute(select(MockDbData))
     db_mocks_data = res.scalars().all()
 
@@ -18,6 +27,16 @@ async def get_all_mock_data(session: AsyncSession) -> list[MockModelWithDate] | 
 
 @DBManager.with_session
 async def get_mock_data_by_uuid(session: AsyncSession, uuid: UUID) -> MockModelWithDate | None:
+    """
+    Получить mock-данные по UUID.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        uuid (UUID): UUID mock-данных.
+
+    Returns:
+        MockModelWithDate | None: Модель mock-данных с датой, либо None, если не найдено.
+    """
     res = await session.execute(select(MockDbData).where(MockDbData.uuid == uuid))
     db_mock_data = res.scalar_one_or_none()
     return MockModelWithDate.model_validate(db_mock_data) if db_mock_data else None
@@ -25,6 +44,16 @@ async def get_mock_data_by_uuid(session: AsyncSession, uuid: UUID) -> MockModelW
 
 @DBManager.with_session
 async def create_mock_data(session: AsyncSession, mock_data: MockData) -> MockModelWithDate:
+    """
+    Создать новые mock-данные в базе данных.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        mock_data (MockData): Данные для создания mock-объекта.
+
+    Returns:
+        MockModelWithDate: Созданная модель mock-данных с датой.
+    """
     db_mock = MockDbData(
         uuid=uuid4(),
         uri=mock_data.uri,
@@ -43,6 +72,16 @@ async def create_mock_data(session: AsyncSession, mock_data: MockData) -> MockMo
 
 @DBManager.with_session
 async def delete_mock_data(session: AsyncSession, uuid: UUID) -> bool:
+    """
+    Удалить mock-данные по UUID.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        uuid (UUID): UUID mock-данных для удаления.
+
+    Returns:
+        bool: True, если удаление прошло успешно, иначе False.
+    """
     res = await session.execute(select(MockDbData).where(MockDbData.uuid == uuid))
     db_mock_data = res.scalar_one_or_none()
     if db_mock_data:
