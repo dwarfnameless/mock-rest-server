@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.api import api_router
 from src.settings import config
 
 app = FastAPI(
@@ -17,8 +18,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(api_router)
 
-@app.get("/")
+
+@app.get("/", tags=["root"])
 async def root() -> dict[str, str]:
     return {"message": "Hello World"}
 
