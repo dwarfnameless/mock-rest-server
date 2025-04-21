@@ -23,4 +23,4 @@ class Settings(BaseSettings):
 
     # Настройки базы данных
     DB_TYPE: str = Field(default="sqlite3")
-    DB_HOST: str = Field(default="memory")
+    DB_HOST: str = Field(default="sqlite+aiosqlite:///:memory:")
