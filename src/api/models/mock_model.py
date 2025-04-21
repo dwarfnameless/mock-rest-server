@@ -1,9 +1,9 @@
 import re
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, Json, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 URI_REGEX = r"^/[^/]+(/[^/]+)*$"
 
@@ -23,36 +23,43 @@ class MockData(BaseModel):
         delay (int): Задержка ответа в миллисекундах.
     """
 
-    uri: str = Field(
-        ...,
-        pattern=URI_REGEX,
-        description=(
-            "URI эндпоинта для мок-ответа (должен начинаться с / и может содержать дополнительные сегменты пути)"
+    uri: Annotated[
+        str,
+        Field(
+            pattern=URI_REGEX,
+            description=(
+                "URI эндпоинта для мок-ответа (должен начинаться с / и может содержать дополнительные сегменты пути)"
+            ),
+            examples=["/api/v1/users"],
         ),
-        example="/api/v1/users",
-    )
+    ]
     method: Literal["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"] = Field(
         ..., description="HTTP метод, на который будет реагировать мок"
     )
     status_code: int = Field(..., ge=100, le=699, description="HTTP код ответа (от 100 до 699)")
-    headers: Json = Field(
-        ...,
-        description="HTTP заголовки, которые будут возвращены в ответе",
-        examples=[
-            {"Content-Type": "application/json"},
-            {"Authorization": "Bearer token123", "X-Request-ID": "abc123"},
-            {"Accept": "application/json", "Cache-Control": "no-cache"},
-        ],
-    )
-    body: Json = Field(
-        ...,
-        description="Тело ответа в формате JSON",
-        examples=[
-            {"users": {"id": 1, "name": "Иван Петров", "active": True}},
-            {"products": [{"id": 101, "name": "Ноутбук"}, {"id": 102, "name": "Телефон"}]},
-            {"error": {"code": 404, "message": "Ресурс не найден"}},
-        ],
-    )
+    headers: Annotated[
+        dict[str, str],
+        Field(
+            description="HTTP заголовки, которые будут возвращены в ответе",
+            examples=[
+                {"Content-Type": "application/json"},
+                {"Authorization": "Bearer token123", "X-Request-ID": "abc123"},
+                {"Accept": "application/json", "Cache-Control": "no-cache"},
+            ],
+        ),
+    ]
+
+    body: Annotated[
+        dict[str, object],
+        Field(
+            description="Тело ответа в формате JSON",
+            examples=[
+                {"users": {"id": 1, "name": "Иван Петров", "active": True}},
+                {"products": [{"id": 101, "name": "Ноутбук"}, {"id": 102, "name": "Телефон"}]},
+                {"error": {"code": 404, "message": "Ресурс не найден"}},
+            ],
+        ),
+    ]
     delay: int = Field(
         ...,
         ge=0,
@@ -70,7 +77,7 @@ class MockData(BaseModel):
             v (str): Проверяемый URI.
 
         Returns:
-            str: Проверенный URI.
+            Self: Проверенный URI.
 
         Raises:
             ValueError: Если URI не начинается с '/' или имеет некорректный формат.
@@ -79,6 +86,7 @@ class MockData(BaseModel):
             raise ValueError("URI должен начинаться с '/'")
         if not re.match(URI_REGEX, v):
             raise ValueError("URI должен иметь корректный формат пути")
+        return v
 
 
 class MockWithUUID(MockData):
