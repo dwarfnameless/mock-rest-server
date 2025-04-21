@@ -4,6 +4,10 @@ from pydantic import BaseModel, Field
 
 
 class ErrorModel(BaseModel):
-    """Модель для представления ошибок API."""
+    """Модель для представления ошибок API.
 
-    detail: Annotated[str, Field(description="Описание ошибки", examples=["Мок-данные не найдены"])]
+    Attributes:
+        detail (str): Описание ошибки. Например, "Мок-данные не найдены".
+    """
+
+    detail: Annotated[str, Field(description="Описание ошибки", examples=["Мок-данные не найдены", "Ошибка валидации"])]
