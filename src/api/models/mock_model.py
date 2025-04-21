@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 URI_REGEX = r"^/[^/]+(/[^/]+)*$"
 
@@ -22,6 +22,8 @@ class MockData(BaseModel):
         body (Json): Тело HTTP ответа в формате JSON.
         delay (int): Задержка ответа в миллисекундах.
     """
+
+    model_config = ConfigDict(from_attributes=True)
 
     uri: Annotated[
         str,
