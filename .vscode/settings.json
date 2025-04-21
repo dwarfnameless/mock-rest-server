@@ -18,5 +18,12 @@
     "**/.mypy_cache": true,
     "**/.ruff_cache": true,
     "**/.venv": true
-  }
+  },
+  "cSpell.words": [
+    "autoflush",
+    "onupdate",
+    "sessionmaker",
+    "мока",
+    "эндпоинта"
+  ]
 }
