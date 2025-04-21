@@ -6,10 +6,30 @@ from sqlalchemy import JSON, DateTime, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
-class Base(DeclarativeBase): ...
+class Base(DeclarativeBase):
+    """
+    Базовый класс для всех моделей SQLAlchemy.
+
+    Используется как основа для декларативных моделей.
+    """
 
 
 class MockDbData(Base):
+    """
+    Модель данных для хранения мок-ответов в базе данных.
+
+    Атрибуты:
+        uuid (UUID): Уникальный идентификатор записи.
+        uri (str): URI эндпоинта, для которого предназначен мок.
+        method (Literal): HTTP-метод (GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS).
+        status_code (int): HTTP статус-код ответа.
+        headers (dict[str, str] | None): Заголовки ответа в формате JSON.
+        body (dict[str, object] | None): Тело ответа в формате JSON.
+        delay (int | None): Задержка ответа в миллисекундах.
+        created_at (datetime): Дата и время создания записи.
+        updated_at (datetime): Дата и время последнего обновления записи.
+    """
+
     __tablename__ = "mock_data"
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True, index=True)
