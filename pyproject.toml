@@ -1,0 +1,86 @@
+[project]
+name = "mock-rest-server"
+version = "0.1.0"
+authors = [
+    { name = "Anton Bogomolov", email = "ashteriel@ya.ru" }
+]
+description = "Simple REST server for testing purposes"
+readme = "README.md"
+requires-python = ">=3.13.3,<4.0"
+dependencies = [
+    "faker>=37.1.0",
+    "fastapi>=0.115.12",
+    "pydantic>=2.11.3",
+    "pydantic-settings>=2.9.1",
+    "sqlalchemy[asyncio]>=2.0.40",
+    "uvicorn>=0.34.2",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.3",
+    "commitizen>=4.6.0",
+    "detect-secrets>=1.5.0",
+    "mypy>=1.15.0",
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.6",
+]
+doc = [
+    "pdoc>=15.0.2",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.26.0",
+    "pytest-xdist>=3.6.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit
+    "C4",  # flake8-comprehensions
+    "PT",  # flake8-pytest-style
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version_files = [
+    "pyproject.toml:version"
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv"]
+skips = ["B311"]
+
+[tool.pytest.ini_options]
+minversion = "8.3"
+addopts = "-ra -q --doctest-modules"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
