@@ -1,10 +1,14 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Self
+from functools import wraps
+from typing import Awaitable, Callable, Concatenate, ParamSpec, Self, TypeVar
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from .models.mock_data import Base
+
+T = TypeVar("T")
+P = ParamSpec("P")
 
 
 class DBManager:
@@ -50,3 +54,13 @@ class DBManager:
                 raise
             finally:
                 await session.close()
+
+    @classmethod
+    def with_session(cls, func: Callable[Concatenate[AsyncSession, P], Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+        @wraps(func)
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+            db = cls()
+            async with db.session() as session:
+                return await func(session, *args, **kwargs)
+
+        return wrapper
