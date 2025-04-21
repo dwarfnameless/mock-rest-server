@@ -1,0 +1,16 @@
+{
+  "cSpell.ignorePaths": [
+    ".editorconfig",
+    ".git",
+    ".gitignore",
+    ".mypy_cache",
+    ".pre-commit-config.yaml",
+    ".ruff_cache",
+    ".secrets.baseline",
+    ".venv",
+    ".vscode",
+    ".vscode-insiders",
+    "pyproject.toml",
+    "uv.lock"
+  ]
+}
