@@ -11,7 +11,19 @@ from src.settings import config
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """
+    Контекстный менеджер жизненного цикла приложения FastAPI.
+
+    Инициализирует базу данных перед запуском приложения.
+
+    Args:
+        app (FastAPI): Экземпляр приложения FastAPI.
+
+    Yields:
+        None: После инициализации базы данных управление возвращается FastAPI.
+    """
     await initialize_db()
+
     yield
 
 
@@ -21,6 +33,11 @@ app = FastAPI(
     version=config.APP_DESCRIPTION,
     lifespan=lifespan,
 )
+"""
+Экземпляр FastAPI приложения.
+
+Конфигурируется с помощью параметров из файла настроек и включает жизненный цикл, CORS и маршруты API.
+"""
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,6 +52,12 @@ app.include_router(api_router)
 
 @app.get("/", tags=["root"])
 async def root() -> dict[str, str]:
+    """
+    Корневой маршрут API.
+
+    Returns:
+        dict[str, str]: Сообщение приветствия.
+    """
     return {"message": "Hello World"}
 
 
