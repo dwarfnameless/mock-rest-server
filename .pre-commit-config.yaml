@@ -15,13 +15,16 @@ repos:
   rev: v1.15.0
   hooks:
   - id: mypy
+    additional_dependencies: ["pydantic"]
+    args: ["--config-file", "pyproject.toml"]
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.11.6
   hooks:
   - id: ruff
-    args: [--fix, --exit-non-zero-on-fix]
+    args: ["--config=pyproject.toml"]
   - id: ruff-format
+    args: ["--config=pyproject.toml"]
 
 - repo: https://github.com/commitizen-tools/commitizen
   rev: v4.6.0
