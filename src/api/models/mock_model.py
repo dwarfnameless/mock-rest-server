@@ -33,13 +33,18 @@ class MockData(BaseModel):
             examples=["/api/v1/users"],
         ),
     ]
-    method: Literal["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"] = Field(
-        ..., description="HTTP метод, на который будет реагировать мок"
-    )
-    status_code: int = Field(..., ge=100, le=699, description="HTTP код ответа (от 100 до 699)")
+    method: Annotated[
+        Literal["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
+        Field(description="HTTP метод, на который будет реагировать мок"),
+    ]
+    status_code: Annotated[
+        int, Field(ge=100, le=699, description="HTTP код ответа (от 100 до 699)", examples=[200, 201, 400, 404, 500])
+    ]
+
     headers: Annotated[
-        dict[str, str],
+        dict[str, str] | None,
         Field(
+            default=None,
             description="HTTP заголовки, которые будут возвращены в ответе",
             examples=[
                 {"Content-Type": "application/json"},
@@ -50,8 +55,9 @@ class MockData(BaseModel):
     ]
 
     body: Annotated[
-        dict[str, object],
+        dict[str, object] | None,
         Field(
+            default=None,
             description="Тело ответа в формате JSON",
             examples=[
                 {"users": {"id": 1, "name": "Иван Петров", "active": True}},
@@ -60,13 +66,17 @@ class MockData(BaseModel):
             ],
         ),
     ]
-    delay: int = Field(
-        ...,
-        ge=0,
-        le=5000,
-        description="Искусственная задержка ответа в миллисекундах (от 0 до 5000)",
-        examples=[0, 100, 500, 2000],
-    )
+
+    delay: Annotated[
+        int | None,
+        Field(
+            default=0,
+            ge=0,
+            le=5000,
+            description="Искусственная задержка ответа в миллисекундах (от 0 до 5000)",
+            examples=[0, 100, 500, 2000],
+        ),
+    ]
 
     @field_validator("uri")
     @classmethod
@@ -98,11 +108,13 @@ class MockWithUUID(MockData):
         uuid (UUID): Уникальный идентификатор мока.
     """
 
-    uuid: UUID = Field(
-        ...,
-        description="Уникальный идентификатор для мока",
-        examples=["550e8400-e29b-41d4-a716-446655440000"],
-    )
+    uuid: Annotated[
+        UUID,
+        Field(
+            description="Уникальный идентификатор для мока",
+            examples=["550e8400-e29b-41d4-a716-446655440000"],
+        ),
+    ]
 
 
 class MockModelWithDate(MockWithUUID):
@@ -115,13 +127,17 @@ class MockModelWithDate(MockWithUUID):
         updated_at (datetime): Дата и время последнего обновления мока.
     """
 
-    created_at: datetime = Field(
-        ...,
-        description="Дата и время создания",
-        examples=["2023-10-01T15:30:00Z"],
-    )
-    updated_at: datetime = Field(
-        ...,
-        description="Дата и время последнего обновления",
-        examples=["2023-10-01T15:30:00Z"],
-    )
+    created_at: Annotated[
+        datetime,
+        Field(
+            description="Дата и время создания мока",
+            examples=["2023-10-01T15:30:00Z"],
+        ),
+    ]
+    updated_at: Annotated[
+        datetime,
+        Field(
+            description="Дата и время последнего обновления мока",
+            examples=["2023-10-01T15:30:00Z"],
+        ),
+    ]
