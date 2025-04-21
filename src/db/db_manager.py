@@ -12,16 +12,27 @@ P = ParamSpec("P")
 
 
 class DBManager:
+    """Менеджер для работы с асинхронной базой данных через SQLAlchemy.
+
+    Реализует паттерн Singleton для управления соединением и сессиями базы данных.
+    """
+
     _instance = None
     _engine = None
     _async_session_maker = None
 
     def __new__(cls) -> Self:
+        """Создает или возвращает единственный экземпляр класса DBManager."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     async def initialize(self, db_url: str) -> None:
+        """Инициализирует подключение к базе данных и создает таблицы.
+
+        Args:
+            db_url (str): URL для подключения к базе данных.
+        """
         if not self._engine:
             self._engine = create_async_engine(
                 db_url,
@@ -42,6 +53,15 @@ class DBManager:
 
     @asynccontextmanager
     async def session(self) -> AsyncGenerator[AsyncSession, None]:
+        """Асинхронный контекстный менеджер для работы сессией базы данных.
+
+        Yields:
+            AsyncSession: Асинхронная сессия SQLAlchemy.
+
+        Raises:
+            RuntimeError: Если база данных не инициализирована.
+            Exception: Любая ошибка при работе с сессией приводит к откату транзакции.
+        """
         if not self._async_session_maker:
             raise RuntimeError("Database not initialized. Call initialize() first")
 
@@ -57,6 +77,15 @@ class DBManager:
 
     @classmethod
     def with_session(cls, func: Callable[Concatenate[AsyncSession, P], Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+        """Декоратор для автоматического предоставления сессии в функцию.
+
+        Args:
+            func (Callable): Асинхронная функция, принимающая первым аргументом AsyncSession.
+
+        Returns:
+            Callable: Обертка, автоматически создающая и передающая сессию.
+        """
+
         @wraps(func)
         async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             db = cls()
