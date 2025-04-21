@@ -9,7 +9,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase): ...
 
 
-class MockData(Base):
+class MockDbData(Base):
     __tablename__ = "mock_data"
 
     uuid: Mapped[UUID] = mapped_column(primary_key=True, index=True)
