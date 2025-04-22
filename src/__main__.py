@@ -68,6 +68,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
-        "src.__main__:app",
-        reload=config.SERVER_RELOAD,
+        app,
+        host=config.SERVER_HOST,
+        port=config.SERVER_PORT,
     )
