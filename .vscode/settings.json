@@ -11,6 +11,7 @@
     ".vscode",
     ".vscode-insiders",
     "Dockerfile",
+    "docker-compose.yml",
     "pyproject.toml",
     "uv.lock"
   ],
