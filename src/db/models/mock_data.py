@@ -1,9 +1,11 @@
 from datetime import datetime
-from typing import Literal
+from typing import Literal, TypeVar
 from uuid import UUID
 
 from sqlalchemy import JSON, DateTime, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+T = TypeVar("T", bound="Base")
 
 
 class Base(DeclarativeBase):
