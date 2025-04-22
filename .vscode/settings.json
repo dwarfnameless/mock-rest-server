@@ -33,6 +33,14 @@
     "мока",
     "моков",
     "предкоммита",
-    "эндпоинта"
-  ]
+    "роутеров",
+    "Фикстура",
+    "эндпоинта",
+    "эндпоинтов"
+  ],
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
