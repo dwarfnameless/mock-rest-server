@@ -12,11 +12,9 @@ from src.services.mock_service import get_last_mock_data_by_uri_and_method, get_
 def setup_dynamic_mock_middleware(app: FastAPI) -> None:
     @app.middleware("http")
     async def dynamic_mock_middleware(request: Request, call_next: RequestResponseEndpoint) -> Response:
-        mock_uuid = request.headers.get("x-req-id")
-        if not mock_uuid:
-            return await call_next(request)
-
         try:
+            mock_uuid = request.headers.get("x-req-id")
+
             if mock_uuid:
                 uuid = UUID(mock_uuid)
                 mock_data = await get_mock_data_by_uuid(uuid)
@@ -26,15 +24,17 @@ def setup_dynamic_mock_middleware(app: FastAPI) -> None:
                         status_code=status.HTTP_404_NOT_FOUND,
                         content=error.model_dump(),
                     )
-            else:
-                mock_data = await get_last_mock_data_by_uri_and_method(
-                    uri=request.url.path,
-                    method=request.method,
-                )
-                if not mock_data:
-                    return await call_next(request)
+                return await handle_mock_request(request, mock_data)
 
-            return await handle_mock_request(request, mock_data)
+            mock_data = await get_last_mock_data_by_uri_and_method(
+                uri=request.url.path,
+                method=request.method,
+            )
+
+            if mock_data:
+                return await handle_mock_request(request, mock_data)
+
+            return await call_next(request)
 
         except ValueError:
             error = ErrorModel(detail=f"Invalid UUID format: {mock_uuid}")
