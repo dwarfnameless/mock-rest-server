@@ -1,6 +1,6 @@
 [project]
 name = "mock-rest-server"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
     { name = "Anton Bogomolov", email = "ashteriel@ya.ru" }
 ]
@@ -73,7 +73,7 @@ warn_required_dynamic_aliases = true
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0"
+version = "0.2.0"
 tag_format = "v$version"
 update_changelog_on_bump = true
 version_files = [
