@@ -22,6 +22,7 @@
   "cSpell.words": [
     "aiosqlite",
     "autoflush",
+    "autouse",
     "mypy",
     "onupdate",
     "pycache",
