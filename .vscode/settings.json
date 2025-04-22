@@ -10,6 +10,7 @@
     ".venv",
     ".vscode",
     ".vscode-insiders",
+    "Dockerfile",
     "pyproject.toml",
     "uv.lock"
   ],
