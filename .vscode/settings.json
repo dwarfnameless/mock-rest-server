@@ -28,6 +28,7 @@
     "autouse",
     "mypy",
     "onupdate",
+    "pdoc",
     "pycache",
     "Pydantic",
     "pyproject",
