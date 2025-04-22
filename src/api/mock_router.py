@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from src.api.models.error_model import ErrorModel
 from src.api.models.mock_model import MockData, MockModelWithDate
 from src.services.mock_service import create_mock_data, delete_mock_data, get_all_mock_data, get_mock_data_by_uuid
+from src.services.register_mock import register_mock
 
 router = APIRouter()
 
@@ -57,6 +58,7 @@ async def create_mock(mock: MockData) -> MockModelWithDate:
         MockModelWithDate: Созданный объект мок-данных с датой.
     """
     mock_data = await create_mock_data(mock)
+    register_mock(mock_data)
     return mock_data
 
 
