@@ -43,6 +43,31 @@ async def get_mock_data_by_uuid(session: AsyncSession, uuid: UUID) -> MockModelW
 
 
 @DBManager.with_session
+async def get_last_mock_data_by_uri_and_method(
+    session: AsyncSession, uri: str, method: str
+) -> MockModelWithDate | None:
+    """
+    Получить последние mock-данные по URI и методу.
+
+    Args:
+        session (AsyncSession): Асинхронная сессия SQLAlchemy.
+        uri (str): URI mock-данных.
+        method (str): Метод mock-данных.
+
+    Returns:
+        MockModelWithDate | None: Модель mock-данных, либо None, если не найдено.
+    """
+    res = await session.execute(
+        select(MockDbData)
+        .where(MockDbData.uri == uri)
+        .where(MockDbData.method == method)
+        .order_by(MockDbData.created_at.desc())
+    )
+    db_mock_data = res.scalar_one_or_none()
+    return MockModelWithDate.model_validate(db_mock_data) if db_mock_data else None
+
+
+@DBManager.with_session
 async def create_mock_data(session: AsyncSession, mock_data: MockData) -> MockModelWithDate:
     """
     Создать новые mock-данные в базе данных.
@@ -89,6 +114,3 @@ async def delete_mock_data(session: AsyncSession, uuid: UUID) -> bool:
         await session.commit()
         return True
     return False
-
-
-# async def update_mock_data(params: str) -> MockModelWithDate: ...
