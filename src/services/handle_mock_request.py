@@ -8,6 +8,23 @@ from src.api.models.mock_model import MockWithUUID
 
 
 async def handle_mock_request(req: Request, mock_data: MockWithUUID) -> JSONResponse:
+    """
+    Обрабатывает входящий HTTP-запрос и возвращает ответ на основе предоставленных данных мока.
+
+    Args:
+        req (Request): Входящий HTTP-запрос FastAPI.
+        mock_data (MockWithUUID): Данные мока, содержащие параметры для ответа.
+
+    Returns:
+        JSONResponse: Ответ, соответствующий данным мока или сообщение об ошибке.
+
+    Raises:
+        None
+
+    Примеры:
+        >>> await handle_mock_request(request, mock_data)
+        <JSONResponse ...>
+    """
     if req.method != mock_data.method:
         error = ErrorModel(detail=f"Method {req.method} not allowed for this endpoint")
         return JSONResponse(
