@@ -20,12 +20,19 @@
     "**/.venv": true
   },
   "cSpell.words": [
+    "aiosqlite",
     "autoflush",
+    "mypy",
     "onupdate",
+    "pycache",
+    "Pydantic",
+    "pyproject",
     "sessionmaker",
     "воркеров",
+    "миддлвар",
     "мока",
     "моков",
+    "предкоммита",
     "эндпоинта"
   ]
 }
