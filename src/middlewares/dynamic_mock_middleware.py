@@ -5,7 +5,8 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import RequestResponseEndpoint
 
 from src.api.models.error_model import ErrorModel
-from src.services.register_mock import handle_mock_request, registered_mocks
+from src.services.handle_mock_request import handle_mock_request
+from src.services.mock_service import get_last_mock_data_by_uri_and_method, get_mock_data_by_uuid
 
 
 def setup_dynamic_mock_middleware(app: FastAPI) -> None:
@@ -16,17 +17,27 @@ def setup_dynamic_mock_middleware(app: FastAPI) -> None:
             return await call_next(request)
 
         try:
-            uuid = UUID(mock_uuid)
-            mock_data = registered_mocks.get(str(uuid))
-            if not mock_data:
-                error = ErrorModel(detail=f"Mock with UUID {mock_uuid} not found")
-                return JSONResponse(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    content=error.model_dump(),
+            if mock_uuid:
+                uuid = UUID(mock_uuid)
+                mock_data = await get_mock_data_by_uuid(uuid)
+                if not mock_data:
+                    error = ErrorModel(detail=f"Mock with UUID {mock_uuid} not found")
+                    return JSONResponse(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        content=error.model_dump(),
+                    )
+            else:
+                mock_data = await get_last_mock_data_by_uri_and_method(
+                    uri=request.url.path,
+                    method=request.method,
                 )
+                if not mock_data:
+                    return await call_next(request)
+
             return await handle_mock_request(request, mock_data)
+
         except ValueError:
-            error = ErrorModel(detail=f"Invalid UUID {mock_uuid}")
+            error = ErrorModel(detail=f"Invalid UUID format: {mock_uuid}")
             return JSONResponse(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 content=error.model_dump(),
