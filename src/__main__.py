@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api import api_router
 from src.db import initialize_db
+from src.middlewares.dynamic_mock_middleware import setup_dynamic_mock_middleware
 from src.settings import config
 
 
@@ -38,6 +39,8 @@ app = FastAPI(
 
 Конфигурируется с помощью параметров из файла настроек и включает жизненный цикл, CORS и маршруты API.
 """
+
+setup_dynamic_mock_middleware(app)
 
 app.add_middleware(
     CORSMiddleware,
