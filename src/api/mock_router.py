@@ -9,8 +9,6 @@ from src.api.models.error_model import ErrorModel
 from src.api.models.mock_model import MockData, MockModelWithDate
 from src.services.mock_service import create_mock_data, delete_mock_data, get_all_mock_data, get_mock_data_by_uuid
 
-from .dynamic_router import register_mock_route
-
 router = APIRouter()
 
 
@@ -59,7 +57,6 @@ async def create_mock(mock: MockData) -> MockModelWithDate:
         MockModelWithDate: Созданный объект мок-данных с датой.
     """
     mock_data = await create_mock_data(mock)
-    await register_mock_route(mock_data)
     return mock_data
 
 
