@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     )
 
     # Настройки приложения
-    APP_TITLE: str = Field(default="MyApp", description="Название приложения.")
+    APP_TITLE: str = Field(default="Mock REST Server", description="Название приложения.")
     APP_VERSION: str = Field(default="0.2.0", description="Версия приложения.")
     APP_DESCRIPTION: str = Field(default="My application description", description="Описание приложения.")
 
